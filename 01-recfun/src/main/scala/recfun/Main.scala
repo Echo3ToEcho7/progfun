@@ -15,13 +15,14 @@ object Main {
    * Exercise 1
    */
   def pascal(c: Int, r: Int): Int = {
-    if (c < 0) return 0
-    if (r < 0) return 0
-
-    c match {
-      case 0 => 1
-      case `r` => 1
-      case _ => pascal(c - 1, r - 1) + pascal(c, r - 1)
+    if ((c < 0) || (r < 0)) {
+      0
+    } else {
+      c match {
+        case 0 => 1
+        case `r` => 1
+        case _ => pascal(c - 1, r - 1) + pascal(c, r - 1)
+      }
     }
   }
 
@@ -31,19 +32,16 @@ object Main {
   def balance(chars: List[Char]): Boolean = {
     def balanceHelper(chars: List[Char], count: Int): Boolean = {
       if (chars.isEmpty) {
-        return count == 0
+        count == 0
+      } else if (count < 0) {
+        false
+      } else {
+        chars.head match {
+          case '(' => balanceHelper(chars.tail, count + 1)
+          case ')' => balanceHelper(chars.tail, count - 1)
+          case _ => balanceHelper(chars.tail, count)
+        }
       }
-
-      if (count < 0) {
-        return false
-      }
-
-      chars.head match {
-        case '(' => balanceHelper(chars.tail, count + 1)
-        case ')' => balanceHelper(chars.tail, count - 1)
-        case _ => balanceHelper(chars.tail, count)
-      }
-
     }
 
     balanceHelper(chars, 0)
@@ -58,25 +56,28 @@ object Main {
     def countChangeHelper(moneyLeft: Int, coinsHead: Int, coinsTail: List[Int], numFound: Int): Int = {
       if (coinsTail.isEmpty) {
         if (moneyLeft - coinsHead == 0) {
-          return numFound + 1
+          numFound + 1
         } else if (moneyLeft - coinsHead > 0) {
-          return countChangeHelper(moneyLeft - coinsHead, coinsHead, coinsTail, numFound)
+          countChangeHelper(moneyLeft - coinsHead, coinsHead, coinsTail, numFound)
         } else {
-          return numFound
+          numFound
+        }
+      } else {
+
+        if (moneyLeft - coinsHead == 0) {
+          numFound + 1
+        } else if (moneyLeft - coinsHead < 0) {
+          countChangeHelper(moneyLeft - coinsHead, coinsTail.head, coinsTail.tail, numFound)
+        } else {
+          countChangeHelper(moneyLeft - coinsHead, coinsHead, coinsTail, numFound) + countChangeHelper(moneyLeft, coinsTail.head, coinsTail.tail, numFound)
         }
       }
-
-      if (moneyLeft - coinsHead == 0) {
-        return numFound + 1
-      } else if (moneyLeft - coinsHead < 0) {
-        return countChangeHelper(moneyLeft - coinsHead, coinsTail.head, coinsTail.tail, numFound)
-      }
-
-      return countChangeHelper(moneyLeft - coinsHead, coinsHead, coinsTail, numFound) + countChangeHelper(moneyLeft, coinsTail.head, coinsTail.tail, numFound)
     }
 
-    if (sortedCoins.isEmpty) return 0
-
-    countChangeHelper(money, sortedCoins.head, sortedCoins.tail, 0)
+    if (sortedCoins.isEmpty) {
+      0
+    } else {
+      countChangeHelper(money, sortedCoins.head, sortedCoins.tail, 0)
+    }
   }
 }
