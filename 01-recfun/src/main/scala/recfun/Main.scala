@@ -15,6 +15,9 @@ object Main {
    * Exercise 1
    */
   def pascal(c: Int, r: Int): Int = {
+    if (c < 0) return 0
+    if (r < 0) return 0
+
     c match {
       case 0 => 1
       case `r` => 1
@@ -49,5 +52,27 @@ object Main {
   /**
    * Exercise 3
    */
-  def countChange(money: Int, coins: List[Int]): Int = ???
+  def countChange(money: Int, coins: List[Int]): Int = {
+    def countChangeHelper(moneyLeft: Int, coinsHead: Int, coinsTail: List[Int], numFound: Int) = {
+      if (coinsTail.isEmpty) {
+        if (moneyLeft - coinsHead == 0) {
+          return numFound + 1
+        } else if (moneyLeft - coinsHead > 0) {
+          return countChangeHelper(moneyLeft - coinsHead, coinsHead, coinsTail, numFound)
+        } else {
+          return numFound
+        }
+      }
+
+      if (moneyLeft - coinsHead > 0) {
+        return countChangeHelper(moneyLeft - coinsHead, coinsTail.head, coinsTail.tail, numFound)
+      } else if (moneyLeft - coinsHead == 0) {
+        return numFound + 1
+      }
+
+      return countChangeHelper(moneyLeft - coinsHead, coinsHead, coinsTail, numFound)
+    }
+
+    countChangeHelper(money, coins.head, coins.tail, 0)
+  }
 }
