@@ -53,6 +53,8 @@ object Main {
    * Exercise 3
    */
   def countChange(money: Int, coins: List[Int]): Int = {
+    def sortedCoins = coins.sortWith(_ < _)
+
     def countChangeHelper(moneyLeft: Int, coinsHead: Int, coinsTail: List[Int], numFound: Int): Int = {
       if (coinsTail.isEmpty) {
         if (moneyLeft - coinsHead == 0) {
@@ -64,15 +66,17 @@ object Main {
         }
       }
 
-      if (moneyLeft - coinsHead > 0) {
-        return countChangeHelper(moneyLeft - coinsHead, coinsTail.head, coinsTail.tail, numFound)
-      } else if (moneyLeft - coinsHead == 0) {
+      if (moneyLeft - coinsHead == 0) {
         return numFound + 1
+      } else if (moneyLeft - coinsHead < 0) {
+        return countChangeHelper(moneyLeft - coinsHead, coinsTail.head, coinsTail.tail, numFound)
       }
 
-      return countChangeHelper(moneyLeft - coinsHead, coinsHead, coinsTail, numFound)
+      return countChangeHelper(moneyLeft - coinsHead, coinsHead, coinsTail, numFound) + countChangeHelper(moneyLeft, coinsTail.head, coinsTail.tail, numFound)
     }
 
-    countChangeHelper(money, coins.head, coins.tail, 0)
+    if (sortedCoins.isEmpty) return 0
+
+    countChangeHelper(money, sortedCoins.head, sortedCoins.tail, 0)
   }
 }
