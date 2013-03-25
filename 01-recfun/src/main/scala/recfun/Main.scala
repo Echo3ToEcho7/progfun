@@ -53,7 +53,7 @@ object Main {
    * Exercise 3
    */
   def countChange(money: Int, coins: List[Int]): Int = {
-    def countChangeHelper(moneyLeft: Int, coinsHead: Int, coinsTail: List[Int], numFound: Int) = {
+    def countChangeHelper(moneyLeft: Int, coinsHead: Int, coinsTail: List[Int], numFound: Int): Int = {
       if (coinsTail.isEmpty) {
         if (moneyLeft - coinsHead == 0) {
           return numFound + 1
