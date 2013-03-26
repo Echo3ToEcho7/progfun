@@ -53,31 +53,32 @@ object Main {
   def countChange(money: Int, coins: List[Int]): Int = {
     def sortedCoins = coins.sortWith(_ < _)
 
-    def countChangeHelper(moneyLeft: Int, coinsHead: Int, coinsTail: List[Int], numFound: Int): Int = {
-      if (coinsTail.isEmpty) {
-        if (moneyLeft - coinsHead == 0) {
-          numFound + 1
-        } else if (moneyLeft - coinsHead > 0) {
-          countChangeHelper(moneyLeft - coinsHead, coinsHead, coinsTail, numFound)
-        } else {
-          numFound
-        }
-      } else {
-
-        if (moneyLeft - coinsHead == 0) {
-          numFound + 1
-        } else if (moneyLeft - coinsHead < 0) {
-          countChangeHelper(moneyLeft - coinsHead, coinsTail.head, coinsTail.tail, numFound)
-        } else {
-          countChangeHelper(moneyLeft - coinsHead, coinsHead, coinsTail, numFound) + countChangeHelper(moneyLeft, coinsTail.head, coinsTail.tail, numFound)
-        }
+    def countChangeListEmpty(moneyLeft: Int, coin: Int, numFound: Int): Int = {
+      (moneyLeft - coin) match {
+        case 0 => numFound + 1
+        case r if r > 0 => countChangeListEmpty(r, coin, numFound)
+        case _ => numFound
       }
     }
 
-    if (sortedCoins.isEmpty) {
-      0
-    } else {
-      countChangeHelper(money, sortedCoins.head, sortedCoins.tail, 0)
+    def countChangeWithElts(moneyLeft: Int, coin: Int, coinsTail: List[Int], numFound: Int): Int = {
+      (moneyLeft - coin) match {
+        case 0 => numFound + 1
+        case r if r > 0 => countChangeHelper(r, coin, coinsTail, numFound) + countChangeHelper(moneyLeft, coinsTail.head, coinsTail.tail, numFound)
+        case _ => countChangeHelper(moneyLeft, coinsTail.head, coinsTail.tail, numFound)
+      }
+    }
+
+    def countChangeHelper(moneyLeft: Int, coinsHead: Int, coinsTail: List[Int], numFound: Int): Int = {
+      coinsTail.isEmpty match {
+        case true => countChangeListEmpty(moneyLeft, coinsHead, numFound)
+        case false => countChangeWithElts(moneyLeft, coinsHead, coinsTail, numFound)
+      }
+    }
+
+    sortedCoins.isEmpty match {
+      case true => 0
+      case false => countChangeHelper(money, sortedCoins.head, sortedCoins.tail, 0)
     }
   }
 }
