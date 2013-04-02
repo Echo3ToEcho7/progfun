@@ -51,7 +51,7 @@ object Main {
    * Exercise 3
    */
   def countChange(money: Int, coins: List[Int]): Int = {
-    def sortedCoins = coins.sortWith(_ < _)
+    lazy val sortedCoins = coins.sortWith(_ < _)
 
     def countChangeListEmpty(moneyLeft: Int, coin: Int, numFound: Int): Int = {
       (moneyLeft - coin) match {
@@ -62,11 +62,13 @@ object Main {
     }
 
     def countChangeWithElts(moneyLeft: Int, coin: Int, coinsTail: List[Int], numFound: Int): Int = {
-      (moneyLeft - coin) match {
+      val found = (moneyLeft - coin) match {
         case 0 => numFound + 1
-        case r if r > 0 => countChangeHelper(r, coin, coinsTail, numFound) + countChangeHelper(moneyLeft, coinsTail.head, coinsTail.tail, numFound)
+        case r if r > 0 => countChangeHelper(r, coin, coinsTail, numFound)
         case _ => countChangeHelper(moneyLeft, coinsTail.head, coinsTail.tail, numFound)
       }
+
+      found + countChangeHelper(moneyLeft, coinsTail.head, coinsTail.tail, numFound)
     }
 
     def countChangeHelper(moneyLeft: Int, coinsHead: Int, coinsTail: List[Int], numFound: Int): Int = {
