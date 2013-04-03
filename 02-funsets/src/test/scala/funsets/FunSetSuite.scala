@@ -86,8 +86,8 @@ class FunSetSuite extends FunSuite {
    * Once you finish your implementation of "singletonSet", exchange the
    * function "ignore" by "test".
    */
-  ignore("singletonSet(1) contains 1") {
-    
+  test("singletonSet(1) contains 1") {
+
     /**
      * We create a new instance of the "TestSets" trait, this gives us access
      * to the values "s1" to "s3". 
@@ -101,12 +101,54 @@ class FunSetSuite extends FunSuite {
     }
   }
 
-  ignore("union contains all elements") {
+  test("union contains all elements") {
     new TestSets {
       val s = union(s1, s2)
       assert(contains(s, 1), "Union 1")
       assert(contains(s, 2), "Union 2")
       assert(!contains(s, 3), "Union 3")
+    }
+  }
+
+  test("intersect") {
+    new TestSets {
+      val s = union(s1, s2)
+      val i = intersect(s, s1)
+
+      assert(contains(i, 1), "Intersect 1")
+      assert(!contains(i, 2), "Intersect 1")
+    }
+  }
+
+  test("forall") {
+    new TestSets {
+      val sp = union(s1, union(s2, s3))
+      val p = (x: Int) => x >= 0
+      val n = (x: Int) => x < 0
+      val so = union(s1, s3)
+      val se = s2
+      val o = (x: Int) => x % 2 == 1
+
+      assert(forall(sp, p), "Positives")
+      assert(!forall(sp, n), "Negatives")
+      assert(forall(so, o), "Odds")
+      assert(!forall(se, o), "Evens")
+    }
+  }
+
+  test("exists") {
+    new TestSets {
+      val sp = union(s1, union(s2, s3))
+      val p = (x: Int) => x >= 0
+      val n = (x: Int) => x < 0
+      val so = union(s1, s3)
+      val se = s2
+      val o = (x: Int) => x % 2 == 1
+
+      assert(exists(sp, p), "Positives")
+      assert(!exists(sp, n), "Negatives")
+      assert(exists(sp, o), "Odds")
+      assert(!exists(se, o), "Evens")
     }
   }
 }
