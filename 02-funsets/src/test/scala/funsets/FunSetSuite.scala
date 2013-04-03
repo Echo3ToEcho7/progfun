@@ -151,4 +151,10 @@ class FunSetSuite extends FunSuite {
       assert(!exists(se, o), "Evens")
     }
   }
+
+  test("map") {
+    new TestSets {
+
+    }
+  }
 }
